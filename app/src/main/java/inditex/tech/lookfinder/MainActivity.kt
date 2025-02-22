@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -57,6 +58,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -233,40 +235,46 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón para buscar información
-            Button(
-                onClick = { navController.navigate("recomendations_screen/${Uri.encode(imagePath)}") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar")
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Buscar información de esta imagen")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    val textToShare = "Mirad mi nueva prenda que he comprado. Todo gracias a la increíble aplicación de LookFinder :) 📸"
-                    shareTextAndImage(
-                        context,
-                        textToShare,
-                        bitmap
-                    ) // Compartir la imagen específica
-                },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF333333), // Fondo negro
-                    contentColor = Color.White    // Texto blanco
-                )
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Icon(imageVector = Icons.Default.Share, contentDescription = "Compartir")
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Compartir esta imagen")
+                // Botón para buscar información
+                Button(
+                    onClick = { navController.navigate("recomendations_screen/${Uri.encode(imagePath)}") }
+                ) {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Buscar información de esta imagen")
+                }
+
+                // Botón circular para compartir imagen
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF333333))
+                        .clickable {
+                            val textToShare = "Mirad mi nueva prenda que he comprado. Todo gracias a la increíble aplicación de LookFinder :) 📸"
+                            shareTextAndImage(
+                                context,
+                                textToShare,
+                                bitmap
+                            )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Compartir",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -331,7 +339,7 @@ fun CameraScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
-                items(imageList) { imagePath ->
+                items(imageList.asReversed()) { imagePath ->
                     Log.d("GRID", "IMAGEN:$imagePath")
                     val file = File(imagePath)
                     if (file.exists()) {
@@ -341,7 +349,7 @@ fun CameraScreen(navController: NavController) {
                             contentDescription = "Foto tomada",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .size(100.dp)
+                                .size(150.dp)
                                 .clickable {
                                     navController.navigate("image_detail_screen/${Uri.encode(imagePath)}")
                                 }
