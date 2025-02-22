@@ -59,7 +59,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.draw.clip
+import com.google.ar.sceneform.Camera
 import inditex.tech.lookfinder.screens.RecomendationsScreen
 import inditex.tech.lookfinder.viewmodels.PostViewModel
 
@@ -219,7 +229,6 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para compartir la imagen específica
         Button(
             onClick = {
                 val textToShare = "Mirad mi nueva prenda que he comprado. Todo gracias a la increíble aplicación de LookFinder :) 📸"
@@ -229,10 +238,15 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
                     bitmap
                 ) // Compartir la imagen específica
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF333333), // Fondo negro
+                contentColor = Color.White    // Texto blanco
+            )
         ) {
             Text("Compartir esta imagen")
         }
+
     }
 }
 
@@ -284,11 +298,14 @@ fun CameraScreen(navController: NavController) {
         Column(modifier = Modifier.fillMaxSize()) {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = "Look Finder", style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        text = "Look Finder",
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 },
-                colors = androidx.compose.material3.TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFF333333),
+                    titleContentColor = Color.White
                 )
             )
 
@@ -314,41 +331,87 @@ fun CameraScreen(navController: NavController) {
             }
         }
 
-        Column(
+        // Aquí se agregan los tres botones en una fila
+        Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalArrangement = Arrangement.Center // Centrado de los botones
         ) {
+            // Botón de la Galería (izquierda)
+            Button(
+                onClick = {
+                    galleryLauncher.launch("image/*")
+                },
+                modifier = Modifier
+                    .weight(1f), // Hace que el botón de la galería ocupe el 33% del espacio
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF333333),
+                    contentColor = Color.White
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add, // Ícono de galería
+                    contentDescription = "Abrir Galería",
+                    modifier = Modifier.size(24.dp) // Tamaño del ícono
+                )
+            }
+
+
+            Spacer(modifier = Modifier.width(16.dp)) // Espacio entre botones
+
+            // Botón de la Cámara (centro) con ícono de cámara
             Button(
                 onClick = {
                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     if (intent.resolveActivity(context.packageManager) != null) {
                         cameraLauncher.launch(intent)
                     } else {
-                        Toast.makeText(context, "No se encontró la cámara", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "No se encontró la cámara", Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .weight(1f), // Hace que el botón de la cámara ocupe el 33% del espacio
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF333333),
+                    contentColor = Color.White
+                )
             ) {
-                Text("Abrir Cámara")
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart, // Ícono de la cámara
+                    contentDescription = "Abrir cámara",
+                    modifier = Modifier.size(24.dp) // Tamaño del ícono
+                )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.width(16.dp)) // Espacio entre botones
 
+            // Botón "Fav" (derecha)
             Button(
                 onClick = {
-                    galleryLauncher.launch("image/*")
+                    // Acción para el botón de favoritos
+                    Toast.makeText(context, "Añadir a favoritos", Toast.LENGTH_SHORT).show()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .weight(1f), // Hace que el botón de "Fav" ocupe el 33% del espacio
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF333333),
+                    contentColor = Color.White
+                )
             ) {
-                Text("Abrir Galería")
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder, // Ícono de estrella de favoritos
+                    contentDescription = "Añadir a Favoritos",
+                    modifier = Modifier.size(24.dp) // Tamaño del ícono
+                )
             }
+
         }
     }
 }
+
+
 
 @Composable
 fun SplashScreen(navController: NavController) {
