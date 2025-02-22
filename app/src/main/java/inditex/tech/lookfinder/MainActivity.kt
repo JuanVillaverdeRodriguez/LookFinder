@@ -19,6 +19,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -36,11 +37,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import java.io.File
@@ -57,6 +67,7 @@ import androidx.compose.ui.Alignment
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
 import inditex.tech.lookfinder.viewmodels.PostViewModel
 import java.io.File
+
 
 
 class MainActivity : ComponentActivity() {
@@ -103,7 +114,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = "camera_screen") {
+    NavHost(navController, startDestination = "splash_screen") {
+        composable("splash_screen") { SplashScreen(navController) }
         composable("camera_screen") { CameraScreen(navController) }
         composable("image_detail_screen/{imagePath}") { backStackEntry ->
             val imagePath = backStackEntry.arguments?.getString("imagePath") ?: return@composable
@@ -341,3 +353,34 @@ fun CameraScreen(navController: NavController) {
         }
     }
 }
+
+@Composable
+fun SplashScreen(navController: NavController) {
+    LaunchedEffect(Unit) {
+        // Simula una carga de datos con un retraso
+        kotlinx.coroutines.delay(2000)
+        navController.navigate("camera_screen") {
+            popUpTo("splash_screen") { inclusive = true }
+        }
+    }
+
+    // Contenedor con fondo gris
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.DarkGray), // Fondo gris
+        contentAlignment = Alignment.Center
+    ) {
+        // Texto centrado
+        Text(
+            text = "LOOK FINDER",
+            fontSize = 36.sp, // Tamaño de fuente ajustable
+            color = Color.White, // Color del texto
+            fontFamily = FontFamily(Font(R.font.montserratthin))
+        )
+    }
+}
+
+
+
+
