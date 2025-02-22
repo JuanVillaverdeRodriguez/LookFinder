@@ -49,9 +49,14 @@ import inditex.tech.lookfinder.viewmodels.PostViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = PostViewModel()
+
         setContent {
             LookFinderTheme {
                 AppNavigation()
+                LaunchedEffect(Unit) {
+                    viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
+                }
             }
         }
     }
