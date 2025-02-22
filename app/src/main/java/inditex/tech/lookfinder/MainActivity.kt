@@ -6,16 +6,18 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.net.Uri
-
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -37,8 +39,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import java.io.File
@@ -52,6 +54,9 @@ import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Alignment
+import inditex.tech.lookfinder.ui.theme.LookFinderTheme
+import inditex.tech.lookfinder.viewmodels.PostViewModel
+import java.io.File
 
 
 class MainActivity : ComponentActivity() {
@@ -59,7 +64,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel = PostViewModel()
+        //val viewModel = PostViewModel()
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                val getpermission = Intent()
+                getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                startActivity(getpermission)
+            }
+        }
+
+
 
         // Inicializa el DatabaseHelper
         databaseHelper = DatabaseHelper(this)
@@ -69,12 +84,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             LookFinderTheme {
                 AppNavigation()
+                //val photoUrl by viewModel.photoUrl.collectAsState()
+
                 LaunchedEffect(Unit) {
-                    viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
+                    //viewModel.uploadPhoto("image.jpg")
+                    //viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
                 }
+
+                //Text(photoUrl)
+                //Log.d("API", "photoUrl: " + photoUrl)
             }
         }
     }
+
+
 }
 
 @Composable
@@ -162,14 +185,18 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
     val bitmap = BitmapFactory.decodeFile(decodedPath)
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
         // Mostrar la imagen ampliada
         Image(
             bitmap = bitmap.asImageBitmap(),
             contentDescription = "Imagen ampliada",
-            modifier = Modifier.fillMaxWidth().height(400.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -211,7 +238,11 @@ fun CameraScreen(navController: NavController) {
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val photo = result.data?.extras?.get("data") as? Bitmap
+            val photo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                result.data?.extras?.getParcelable("data", Bitmap::class.java)
+            } else {
+                result.data?.extras?.get("data") as? Bitmap
+            }
             if (photo != null) {
                 val fileName = "photo_${System.currentTimeMillis()}.png"
                 val imagePath = saveImageToInternalStorage(context, photo, fileName)
