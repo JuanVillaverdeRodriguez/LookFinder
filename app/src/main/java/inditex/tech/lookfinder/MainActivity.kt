@@ -34,9 +34,14 @@ class MainActivity : ComponentActivity() {
                             name = "Android",
                             modifier = Modifier.padding(innerPadding)
                         )
+
+                        //PUNTO DE CONEXION DE LA API
+                        //RECIBE: UNA URL DE UNA FOTO
+                        //DEVUELVE: STRING CON RESPUESTA DE LA API
                         LaunchedEffect(Unit) {
-                            viewModel.fetchPosts()
+                            viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
                         }
+                        //----------------------------------------------------------------
                     }
                 }
             }

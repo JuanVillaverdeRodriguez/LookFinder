@@ -16,12 +16,12 @@ import org.json.JSONObject
 
 
 class PostViewModel : ViewModel() {
-    fun fetchPosts() {
+    fun fetchPosts(fotoURL: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d("API", "FUE GUAY")
                 val token = getNewToken()
-                val res = getApiResponse("https://lookfinderserver-production.up.railway.app/uploads/image.jpg", token)
+                val res = getApiResponse(fotoURL, token)
 
                 Log.d("API", "JSON: $res")
 
