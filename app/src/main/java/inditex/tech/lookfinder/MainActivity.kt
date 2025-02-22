@@ -29,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +46,12 @@ import androidx.core.content.FileProvider
 import inditex.tech.lookfinder.Model.DatabaseHelper
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
 import inditex.tech.lookfinder.viewmodels.PostViewModel
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.Alignment
 
 
 class MainActivity : ComponentActivity() {
@@ -139,7 +146,7 @@ private fun shareTextAndImage(context: Context, text: String, imageBitmap: Bitma
     // Iniciar el compartir
     context.startActivity(chooserIntent)
 }
-
+/////////////////////////////////////////////////////////////////////
 @Composable
 fun ImageDetailScreen(navController: NavController, imagePath: String) {
     val context = LocalContext.current
@@ -180,7 +187,7 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
         // Botón para compartir la imagen específica
         Button(
             onClick = {
-                val textToShare = "Mira esta imagen desde LookFinder 📸"
+                val textToShare = "Mirad mi nueva prenda que he comprado. Todo gracias a la increíble aplicación de LookFinder :) 📸"
                 shareTextAndImage(
                     context,
                     textToShare,
@@ -194,6 +201,7 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraScreen(navController: NavController) {
     val context = LocalContext.current
@@ -217,37 +225,87 @@ fun CameraScreen(navController: NavController) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Button(onClick = {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(context.packageManager) != null) {
-                cameraLauncher.launch(intent)
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val fileName = "gallery_${System.currentTimeMillis()}.png"
+            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, it)
+            val imagePath = saveImageToInternalStorage(context, bitmap, fileName)
+
+            if (File(imagePath).exists()) {
+                imageList = imageList + imagePath
             } else {
-                Toast.makeText(context, "No se encontró la cámara", Toast.LENGTH_SHORT).show()
+                Log.e("Gallery", "Error al guardar la imagen de la galería")
             }
-        }, modifier = Modifier.fillMaxWidth()) {
-            Text("Abrir Cámara")
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(text = "Look Finder", style = MaterialTheme.typography.titleLarge)
+                },
+                colors = androidx.compose.material3.TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
+                items(imageList) { imagePath ->
+                    val file = File(imagePath)
+                    if (file.exists()) {
+                        val bitmap = BitmapFactory.decodeFile(imagePath)
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = "Foto tomada",
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(100.dp)
+                                .clickable {
+                                    navController.navigate("image_detail_screen/${Uri.encode(imagePath)}")
+                                }
+                        )
+                    }
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(
+                onClick = {
+                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        cameraLauncher.launch(intent)
+                    } else {
+                        Toast.makeText(context, "No se encontró la cámara", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Abrir Cámara")
+            }
 
-        LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
-            items(imageList) { imagePath ->
-                val file = File(imagePath)
-                if (file.exists()) {
-                    val bitmap = BitmapFactory.decodeFile(imagePath)
+            Spacer(modifier = Modifier.height(8.dp))
 
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "Foto tomada",
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(100.dp)
-                            .clickable {
-                                navController.navigate("image_detail_screen/${Uri.encode(imagePath)}")
-                            }
-                    )
-                }
+            Button(
+                onClick = {
+                    galleryLauncher.launch("image/*")
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Abrir Galería")
             }
         }
     }
