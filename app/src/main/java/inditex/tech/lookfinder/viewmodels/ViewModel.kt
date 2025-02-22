@@ -24,6 +24,9 @@ class PostViewModel : ViewModel() {
     private val _photoUrl = MutableStateFlow("")
     val photoUrl = _photoUrl.asStateFlow()
 
+    private val _recomendedProducts = MutableStateFlow<List<Product>>(emptyList())
+    val recomendedProducts = _recomendedProducts.asStateFlow()
+
     fun fetchPosts(fotoURL: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -49,9 +52,12 @@ class PostViewModel : ViewModel() {
                 val productListType = object : TypeToken<List<Product>>() {}.type
                 val products: List<Product> = gson.fromJson(res, productListType)
 
+                _recomendedProducts.value = products
+
                 for (product in products) {
                     Log.d("API", "Producto: ${product.name}, Precio: ${product.price.value.current} ${product.price.currency}, Link: ${product.link}")
                 }
+                //_photoUrl.value = ""
 
             } catch (e: JsonSyntaxException) {
                 Log.e("API", "Error al parsear JSON: ${e.message}")
