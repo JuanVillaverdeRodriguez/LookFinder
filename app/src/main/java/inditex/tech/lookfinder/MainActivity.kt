@@ -107,23 +107,6 @@ fun CameraScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para compartir
-        Button(
-            onClick = {
-                val textToShare = "Mirad mi nueva prenda que he comprado. Todo gracias a la increíble aplicación de LookFinder :)"
-
-                // Obtener la primera imagen de la lista y convertirla a Bitmap
-                val firstImageBitmap = imageList.firstOrNull()?.let { BitmapFactory.decodeFile(it) }
-
-                // Comparte el texto y la imagen
-                shareTextAndImage(context, textToShare, firstImageBitmap)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Compartir Texto e Imagen")
-        }
-
-
         LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
             items(imageList) { imagePath ->
                 val file = File(imagePath)
@@ -167,62 +150,53 @@ fun CameraScreen(navController: NavController) {
     }
 }
 
+
 private fun shareTextAndImage(context: Context, text: String, imageBitmap: Bitmap?) {
     // Crear el Intent de compartir
     val shareIntent = Intent().apply {
         action = Intent.ACTION_SEND
         putExtra(Intent.EXTRA_TEXT, text)
-        type = "image/png" // Cambiar el tipo a imagen
+        type = if (imageBitmap != null) "image/png" else "text/plain" // Ajustar el tipo de contenido
     }
 
-    // Si hay una imagen, convertirla a un URI y agregarla al Intent
+    // Si hay una imagen, guardarla y agregarla al Intent
     imageBitmap?.let {
-        // Guardar la imagen en el almacenamiento interno
         val imagePath = saveImageToInternalStorage(context, it, "shared_image_${System.currentTimeMillis()}.png")
         val imageUri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", File(imagePath))
 
-        // Agregar la URI de la imagen al Intent
         shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // Permitir el acceso a la URI
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
-    // Crear un Intent de chooser
+    // Intent de chooser
     val chooserIntent = Intent.createChooser(shareIntent, "Compartir en Redes Sociales")
 
-    // Filtrar solo las aplicaciones sociales
-    val socialAppsPackages = listOf(
-        "com.whatsapp",          // WhatsApp
-        "com.instagram.android",  // Instagram
-        "com.facebook.katana"     // Facebook
-    )
+    // Filtrar solo las apps sociales
+    val socialAppsPackages = listOf("com.whatsapp", "com.instagram.android", "com.facebook.katana")
+    val packageManager = context.packageManager
 
-    val filteredIntents = mutableListOf<Intent>()
-
-    for (packageName in socialAppsPackages) {
+    val filteredIntents = socialAppsPackages.mapNotNull { packageName ->
         try {
-            // Crear un nuevo Intent para cada paquete
-            val intent = Intent(shareIntent).apply {
-                setPackage(packageName) // Establecer el paquete de la aplicación
-            }
-            // Añadir el Intent a la lista solo si la aplicación está instalada
-            context.packageManager.getPackageInfo(packageName, 0) // Verificar si la aplicación está instalada
-            filteredIntents.add(intent)
+            packageManager.getPackageInfo(packageName, 0) // Verificar si la app está instalada
+            Intent(shareIntent).apply { setPackage(packageName) } // Crear un intent para esa app
         } catch (e: PackageManager.NameNotFoundException) {
-            // En caso de que la aplicación no esté instalada, se ignora
+            null
         }
     }
 
-    // Agregar los intents filtrados al chooser solo si hay alguno
+    // Si hay apps sociales disponibles, añadirlas al chooser
     if (filteredIntents.isNotEmpty()) {
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, filteredIntents.toTypedArray())
     }
 
-    // Iniciar el chooser
+    // Iniciar el compartir
     context.startActivity(chooserIntent)
 }
 
+
 @Composable
 fun ImageDetailScreen(navController: NavController, imagePath: String) {
+    val context = LocalContext.current
     val decodedPath = Uri.decode(imagePath)
     val file = File(decodedPath)
 
@@ -238,6 +212,7 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        // Mostrar la imagen ampliada
         Image(
             bitmap = bitmap.asImageBitmap(),
             contentDescription = "Imagen ampliada",
@@ -246,11 +221,26 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Botón para buscar información
         Button(
-            onClick = { /* TODO: Implementar la búsqueda de información */ },
+            onClick = { /* Implementar búsqueda de información */ },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Buscar información de esta imagen")
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para compartir la imagen específica
+        Button(
+            onClick = {
+                val textToShare = "Mira esta imagen desde LookFinder 📸"
+                shareTextAndImage(context, textToShare, bitmap) // Compartir la imagen específica
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Compartir esta imagen")
+        }
     }
 }
+
