@@ -53,13 +53,14 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        val url = viewModel.uploadPhoto("image.jpg")
+        Log.e("URL",url)
 
         setContent {
             LookFinderTheme {
                 AppNavigation()
                 LaunchedEffect(Unit) {
-                    viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
-                    viewModel.uploadPhoto("image.jpg")
+                    //viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
                 }
             }
         }

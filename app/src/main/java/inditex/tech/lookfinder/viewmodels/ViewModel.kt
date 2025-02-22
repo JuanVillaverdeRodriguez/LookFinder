@@ -56,16 +56,19 @@ class PostViewModel : ViewModel() {
         }
     }
 
-    fun uploadPhoto(photoUrl: String) {
+    fun uploadPhoto(photoUrl: String) : String{
+        var url = ""
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val image = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), photoUrl)
-                postImage(image)
+                url = postImage(image)
             } catch (e: Exception) {
                 Log.e("API", "Error al subir la foto: ${e.message}")
             }
 
         }
+
+        return url
     }
 
 }

@@ -1,5 +1,6 @@
 package inditex.tech.lookfinder.api
 
+import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.DataOutputStream
@@ -7,20 +8,23 @@ import java.io.File
 import java.io.FileInputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlinx.coroutines.withContext
 
 const val API_URL = "https://lookfinderserver-production.up.railway.app/upload/"
 
-suspend fun postImage(imageFile: File) {
+suspend fun postImage(imageFile: File) : String {
     val maxSize = 7 * 1024 * 1024 // 7MB en bytes
+
+    var fotoUri = ""
 
     if (!imageFile.exists()) {
         println("Error: El archivo no existe.")
-        return
+        return fotoUri
     }
 
     if (imageFile.length() > maxSize) {
         println("Error: La imagen es demasiado grande. Tamaño máximo permitido: 7MB.")
-        return
+        return fotoUri
     }
 
     val boundary = "----WebKitFormBoundary" + System.currentTimeMillis()
@@ -39,6 +43,7 @@ suspend fun postImage(imageFile: File) {
     val outputStream = DataOutputStream(BufferedOutputStream(connection.outputStream, 8192))
 
     try {
+
         // Escribe la cabecera del archivo
         outputStream.writeBytes("$twoHyphens$boundary$lineEnd")
         outputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"${imageFile.name}\"$lineEnd")
@@ -64,11 +69,13 @@ suspend fun postImage(imageFile: File) {
         val responseCode = connection.responseCode
         val responseMessage = connection.inputStream.bufferedReader().use { it.readText() }
 
-        println("Código de respuesta: $responseCode")
-        println("Respuesta del servidor: $responseMessage")
+        //println("Código de respuesta: $responseCode")
+        //println("Respuesta del servidor: $responseMessage")
+        fotoUri = JSONObject(responseMessage).optString("url")
     } catch (e: Exception) {
         println("Error al enviar la imagen: ${e.message}")
     } finally {
         connection.disconnect()
     }
+    return fotoUri
 }
