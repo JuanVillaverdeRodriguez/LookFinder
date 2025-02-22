@@ -1,4 +1,4 @@
-# Look Finder 
+# LookFinder 
 Con Look Finder podrás con solo una foto ver sugerencias de productos de inditex iguales o muy parecidos 
 junto con toda su informacion así como nombre de la pieza,precio y marca.
 
@@ -14,18 +14,6 @@ junto con toda su informacion así como nombre de la pieza,precio y marca.
 ## Guía de instalación. 
   -Se clonará el repositorio y se instalará mediante USB en un movil Android.
   -Se necesitaran permisos de almacenamiento y cámara para que la aplicación funcione.
-
-## Cómo Contribuir
-
-¡Gracias por tu interés en contribuir a este proyecto! Si quieres ayudarnos, puedes seguir estos pasos:
-
-1. Haz un fork del repositorio.
-2. Crea una rama con un nombre descriptivo para tu contribución.
-3. Realiza las modificaciones necesarias.
-4. Asegúrate de que tu código esté limpio y siga las mejores prácticas de estilo.
-5. Envía un pull request detallando los cambios realizados.
-
-Si encuentras algún issue que pueda ser resuelto por ti, no dudes en mencionarlo en el pull request.
 
 ## Licencia
 
@@ -56,7 +44,6 @@ Utiliza las etiquetas correspondientes para que podamos priorizar mejor los issu
 
 - **[#1]** Mejora en la interfaz de usuario: Necesitamos hacer que la interfaz sea más bonita.
 - **[#2]** Mejorar el control de errores y el feedback de estos mismos.
-
 
 
 ## Contacto y Soporte
