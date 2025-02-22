@@ -14,9 +14,6 @@ Con Look Finder podrás con solo una foto ver sugerencias de productos de indite
   -Se clonará el repositorio y se instalará mediante USB en un movil Android.<br/>
   -Se necesitaran permisos de almacenamiento y cámara para que la aplicación funcione.
 
-## Qué Licencia Tiene
-
-
 ## Cómo Contribuir
 
 ¡Gracias por tu interés en contribuir a este proyecto! Si quieres ayudarnos, puedes seguir estos pasos:
