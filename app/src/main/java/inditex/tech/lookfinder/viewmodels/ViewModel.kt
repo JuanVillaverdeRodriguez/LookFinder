@@ -1,7 +1,8 @@
 package inditex.tech.lookfinder.viewmodels
 
-import android.os.Environment
 import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -88,4 +89,91 @@ class PostViewModel : ViewModel() {
         return url
     }
 
+    fun scrapURLImg(webView: WebView, url: String, name: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            try {
+                // Configuración básica de WebView
+                webView.settings.javaScriptEnabled = true
+                webView.settings.domStorageEnabled = true
+
+                // Cuando se carga la página
+                webView.webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+
+                        // Ejecutar JS para obtener la URL de la imagen con la clase especificada
+                        Log.d("PRESCRAPP-NOMBRE: ", "")
+                        webView.evaluateJavascript(
+                            "(function() { " +
+                                    "var images = document.querySelectorAll('img'); " +
+                                    "for (var i = 0; i < images.length; i++) { " +
+                                    "if (images[i].alt && images[i].alt.indexOf('$name') === 0 || images[i].alt && images[i].alt.includes('$name')) { " +
+                                    "return images[i].src; " +
+                                    "} " +
+                                    "} " +
+                                    "return null; " +
+                                    "})()"
+                        ) { imgUrl ->
+                            if (imgUrl != "null") {
+                                Log.d("WebScraper", "Imagen encontrada: $imgUrl")
+
+                                // Actualizamos _photoUrl con la URL de la imagen encontrada
+                                viewModelScope.launch(Dispatchers.IO) {
+                                    _photoUrl.value = imgUrl.replace("\"", "")  // Limpiar las comillas
+                                }
+                            } else {
+                                Log.d("WebScraper", "No se encontró ninguna imagen con el prefijo de clase: $name")
+                            }
+                        }
+                    }
+                }
+
+                // Cargar la URL en el WebView
+                webView.loadUrl(url)
+            } catch (e: Exception) {
+                Log.e("WebScraper", "Error al hacer scraping: ${e.message}")
+            }
+        }
+    }
+
+    /*fun scrapURLImg(webView: WebView, url: String, name: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            try {
+                webView.settings.javaScriptEnabled = true
+                webView.settings.domStorageEnabled = true
+                webView.webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+
+                        // Buscar la primera imagen de la web
+                        webView.evaluateJavascript(
+                            "(function() { " +
+                                    "var images = document.querySelectorAll('img'); " +
+                                    "for (var i = 0; i < images.length; i++) { " +
+                                    "if (images[i].className.indexOf('$name') === 0 || images[i].className.includes('$name')) { " +
+                                    "return images[i].src; " +
+                                    "} " +
+                                    "} " +
+                                    "return null; " +
+                                    "})()"
+                        ) { imgUrl ->
+                            if (imgUrl != "null") {
+                                Log.d("WebScraper", "Imagen encontrada: $imgUrl")
+
+                                /*// Guardar la URL en _photoUrl dentro de un hilo seguro para LiveData
+                                viewModelScope.launch(Dispatchers.IO) {
+                                    _photoUrl.value = imgUrl.replace("\"", "")
+                                }*/
+                            } else {
+                                Log.d("WebScraper", "No se encontró ninguna imagen con el prefijo de clase: $name")
+                            }
+                        }
+                    }
+                }
+                webView.loadUrl(url)
+            } catch (e: Exception) {
+                Log.e("WebScraper", "Error: ${e.message}")
+            }
+        }
+    }*/
 }

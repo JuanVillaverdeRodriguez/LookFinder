@@ -8,6 +8,18 @@ android {
     namespace = "inditex.tech.lookfinder"
     compileSdk = 35
 
+    packaging {
+        resources {
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE.md"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/LICENSE-notice.md"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
+        }
+    }
+
     defaultConfig {
         applicationId = "inditex.tech.lookfinder"
         minSdk = 26
@@ -68,5 +80,11 @@ dependencies {
     implementation(libs.gson)
     implementation("androidx.compose.foundation:foundation:1.7.5")
     implementation("androidx.activity:activity:1.8.1")
+    implementation("org.jsoup:jsoup:1.16.1")
+    implementation("androidx.compose.ui:ui:1.3.0")
+    implementation("androidx.compose.material:material:1.3.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.0")
+    implementation("androidx.activity:activity-compose:1.6.0")
 
 }
