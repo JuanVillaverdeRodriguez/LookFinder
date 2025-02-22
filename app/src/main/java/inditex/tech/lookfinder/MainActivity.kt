@@ -39,6 +39,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -226,7 +228,7 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
                 contentDescription = "Imagen ampliada",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
+                    .weight(1f)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -236,6 +238,8 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
                 onClick = { navController.navigate("recomendations_screen/${Uri.encode(imagePath)}") },
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar")
+                Spacer(modifier = Modifier.width(8.dp))
                 Text("Buscar información de esta imagen")
             }
 
@@ -256,6 +260,8 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
                     contentColor = Color.White    // Texto blanco
                 )
             ) {
+                Icon(imageVector = Icons.Default.Share, contentDescription = "Compartir")
+                Spacer(modifier = Modifier.width(8.dp))
                 Text("Compartir esta imagen")
             }
         }
