@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -60,7 +61,7 @@ fun AppNavigation() {
 @Composable
 fun CameraScreen(navController: NavController) {
     val context = LocalContext.current
-    var imageList by remember { mutableStateOf<List<String>>(emptyList()) }
+    var imageList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
