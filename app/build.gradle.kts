@@ -68,5 +68,6 @@ dependencies {
     implementation(libs.gson)
     implementation("androidx.compose.foundation:foundation:1.7.5")
     implementation("androidx.activity:activity:1.8.1")
+    implementation ("androidx.compose.material:material-icons-extended:1.5.0")
 
 }
