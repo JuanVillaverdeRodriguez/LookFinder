@@ -9,12 +9,15 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.net.Uri
+
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,26 +30,40 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.*
+import java.io.File
 import androidx.core.content.FileProvider
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
-import java.io.File
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LookFinderTheme {
-                CameraScreen()
+                AppNavigation()
             }
         }
     }
 }
 
 @Composable
-fun CameraScreen() {
+fun AppNavigation() {
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = "camera_screen") {
+        composable("camera_screen") { CameraScreen(navController) }
+        composable("image_detail_screen/{imagePath}") { backStackEntry ->
+            val imagePath = backStackEntry.arguments?.getString("imagePath") ?: return@composable
+            ImageDetailScreen(navController, imagePath)
+        }
+    }
+}
+
+@Composable
+fun CameraScreen(navController: NavController) {
     val context = LocalContext.current
-    var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    var imageList by remember { mutableStateOf<List<String>>(emptyList()) } // Usar una lista de rutas de imágenes
+    var imageList by remember { mutableStateOf<List<String>>(emptyList()) }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -54,41 +71,27 @@ fun CameraScreen() {
         if (result.resultCode == Activity.RESULT_OK) {
             val photo = result.data?.extras?.get("data") as? Bitmap
             if (photo != null) {
-                // Generar un nombre único para la imagen
                 val fileName = "photo_${System.currentTimeMillis()}.png"
-
-                // Guardar la imagen en el almacenamiento interno
                 val imagePath = saveImageToInternalStorage(context, photo, fileName)
 
-                // Agregar la ruta de la imagen a la lista
-                imageList = imageList + imagePath
-
-                Log.d("Camera", "Foto guardada en $imagePath")
-            } else {
-                Log.d("Camera", "⚠️ No se recibió ninguna imagen de la cámara.")
+                if (File(imagePath).exists()) {
+                    imageList = imageList + imagePath
+                } else {
+                    Log.e("Camera", "Error al guardar la foto")
+                }
             }
-        } else {
-            Log.d("camera", "❌ La cámara fue cancelada o falló.")
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-
-        // Botón para abrir la cámara
-        Button(
-            onClick = {
-                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                if (intent.resolveActivity(context.packageManager) != null) {
-                    println("✅ Cámara encontrada, abriendo...")
-                    cameraLauncher.launch(intent)
-                } else {
-                    println("❌ No se encontró una aplicación de cámara.")
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Button(onClick = {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(context.packageManager) != null) {
+                cameraLauncher.launch(intent)
+            } else {
+                Toast.makeText(context, "No se encontró la cámara", Toast.LENGTH_SHORT).show()
+            }
+        }, modifier = Modifier.fillMaxWidth()) {
             Text("Abrir Cámara")
         }
 
@@ -111,21 +114,23 @@ fun CameraScreen() {
         }
 
 
-        // Mostrar las fotos tomadas en una cuadrícula
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3), // Número de columnas
-            modifier = Modifier.fillMaxSize()
-        ) {
+        LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
             items(imageList) { imagePath ->
-                // Decodificar la imagen desde el almacenamiento interno y mostrarla
-                val bitmap = BitmapFactory.decodeFile(imagePath)
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = "Foto tomada",
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .size(100.dp) // Tamaño de la imagen
-                )
+                val file = File(imagePath)
+                if (file.exists()) {
+                    val bitmap = BitmapFactory.decodeFile(imagePath)
+
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Foto tomada",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .size(100.dp)
+                            .clickable {
+                                navController.navigate("image_detail_screen/${Uri.encode(imagePath)}")
+                            }
+                    )
+                }
             }
         }
     }
@@ -185,10 +190,36 @@ private fun shareTextAndImage(context: Context, text: String, imageBitmap: Bitma
     context.startActivity(chooserIntent)
 }
 
-@Preview(showBackground = true)
 @Composable
-fun CameraScreenPreview() {
-    LookFinderTheme {
-        CameraScreen()
+fun ImageDetailScreen(navController: NavController, imagePath: String) {
+    val decodedPath = Uri.decode(imagePath)
+    val file = File(decodedPath)
+
+    if (!file.exists()) {
+        Log.e("ImageDetail", "Error: La imagen no existe en la ruta proporcionada.")
+        Text("Error: No se pudo cargar la imagen")
+        return
+    }
+
+    val bitmap = BitmapFactory.decodeFile(decodedPath)
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            bitmap = bitmap.asImageBitmap(),
+            contentDescription = "Imagen ampliada",
+            modifier = Modifier.fillMaxWidth().height(400.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { /* TODO: Implementar la búsqueda de información */ },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Buscar información de esta imagen")
+        }
     }
 }
