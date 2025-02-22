@@ -45,7 +45,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,19 +53,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import java.io.File
-import androidx.core.content.FileProvider
 import inditex.tech.lookfinder.Model.DatabaseHelper
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
-import inditex.tech.lookfinder.viewmodels.PostViewModel
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.ui.Alignment
-import inditex.tech.lookfinder.ui.theme.LookFinderTheme
-import inditex.tech.lookfinder.viewmodels.PostViewModel
-import java.io.File
 
 
 
@@ -84,8 +77,6 @@ class MainActivity : ComponentActivity() {
                 startActivity(getpermission)
             }
         }
-
-
 
         // Inicializa el DatabaseHelper
         databaseHelper = DatabaseHelper(this)
