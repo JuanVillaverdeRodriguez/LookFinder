@@ -12,6 +12,8 @@ import inditex.tech.lookfinder.api.getNewToken
 import inditex.tech.lookfinder.api.postImage
 import inditex.tech.lookfinder.dtos.Product
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -19,6 +21,9 @@ import java.io.File
 
 
 class PostViewModel : ViewModel() {
+    private val _photoUrl = MutableStateFlow("")
+    val photoUrl = _photoUrl.asStateFlow()
+
     fun fetchPosts(fotoURL: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -61,7 +66,7 @@ class PostViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val image = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), photoUrl)
-                url = postImage(image)
+                _photoUrl.value = postImage(image)
             } catch (e: Exception) {
                 Log.e("API", "Error al subir la foto: ${e.message}")
             }

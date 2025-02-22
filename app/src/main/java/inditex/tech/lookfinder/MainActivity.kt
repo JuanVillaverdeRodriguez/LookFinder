@@ -43,7 +43,7 @@ import java.io.File
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel = PostViewModel()
+        //val viewModel = PostViewModel()
 
         if (Build.VERSION.SDK_INT >= 30) {
             if (!Environment.isExternalStorageManager()) {
@@ -53,15 +53,20 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val url = viewModel.uploadPhoto("image.jpg")
-        Log.e("URL",url)
+
 
         setContent {
             LookFinderTheme {
                 AppNavigation()
+                //val photoUrl by viewModel.photoUrl.collectAsState()
+
                 LaunchedEffect(Unit) {
+                    //viewModel.uploadPhoto("image.jpg")
                     //viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
                 }
+
+                //Text(photoUrl)
+                //Log.d("API", "photoUrl: " + photoUrl)
             }
         }
     }
