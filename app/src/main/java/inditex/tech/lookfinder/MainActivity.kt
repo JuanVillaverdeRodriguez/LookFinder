@@ -21,57 +21,61 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.*
-import java.io.File
-import inditex.tech.lookfinder.Model.DatabaseHelper
-import inditex.tech.lookfinder.ui.theme.LookFinderTheme
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import com.google.ar.sceneform.Camera
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import inditex.tech.lookfinder.Model.DatabaseHelper
 import inditex.tech.lookfinder.screens.RecomendationsScreen
+import inditex.tech.lookfinder.ui.theme.LookFinderTheme
 import inditex.tech.lookfinder.viewmodels.PostViewModel
+import java.io.File
 
 
 class MainActivity : ComponentActivity() {
@@ -188,67 +192,90 @@ private fun shareTextAndImage(context: Context, text: String, imageBitmap: Bitma
     context.startActivity(chooserIntent)
 }
 /////////////////////////////////////////////////////////////////////
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageDetailScreen(navController: NavController, imagePath: String) {
     val context = LocalContext.current
     val decodedPath = Uri.decode(imagePath)
     val file = File(decodedPath)
 
-    if (!file.exists()) {
-        Log.e("ImageDetail", "Error: La imagen no existe en la ruta proporcionada.")
-        Text("Error: No se pudo cargar la imagen")
-        return
-    }
-
     val bitmap = BitmapFactory.decodeFile(decodedPath)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Mostrar la imagen ampliada
-        Image(
-            bitmap = bitmap.asImageBitmap(),
-            contentDescription = "Imagen ampliada",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
+    Column(modifier = Modifier.fillMaxSize()) {
+        // TopBar
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = "Look Finder",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFF333333),
+                titleContentColor = Color.White
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para buscar información
-        Button(
-            onClick = { navController.navigate("recomendations_screen/${Uri.encode(imagePath)}") },
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Buscar información de esta imagen")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                val textToShare = "Mirad mi nueva prenda que he comprado. Todo gracias a la increíble aplicación de LookFinder :) 📸"
-                shareTextAndImage(
-                    context,
-                    textToShare,
-                    bitmap
-                ) // Compartir la imagen específica
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF333333), // Fondo negro
-                contentColor = Color.White    // Texto blanco
+            // Mostrar la imagen ampliada
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = "Imagen ampliada",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             )
-        ) {
-            Text("Compartir esta imagen")
-        }
 
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Botón para buscar información
+                Button(
+                    onClick = { navController.navigate("recomendations_screen/${Uri.encode(imagePath)}") }
+                ) {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Buscar información de esta imagen")
+                }
+
+                // Botón circular para compartir imagen
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF333333))
+                        .clickable {
+                            val textToShare = "Mirad mi nueva prenda que he comprado. Todo gracias a la increíble aplicación de LookFinder :) 📸"
+                            shareTextAndImage(
+                                context,
+                                textToShare,
+                                bitmap
+                            )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Compartir",
+                        tint = Color.White
+                    )
+                }
+            }
+        }
     }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -312,7 +339,7 @@ fun CameraScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
-                items(imageList) { imagePath ->
+                items(imageList.asReversed()) { imagePath ->
                     Log.d("GRID", "IMAGEN:$imagePath")
                     val file = File(imagePath)
                     if (file.exists()) {
@@ -322,7 +349,7 @@ fun CameraScreen(navController: NavController) {
                             contentDescription = "Foto tomada",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .size(100.dp)
+                                .size(150.dp)
                                 .clickable {
                                     navController.navigate("image_detail_screen/${Uri.encode(imagePath)}")
                                 }
@@ -353,7 +380,7 @@ fun CameraScreen(navController: NavController) {
                 )
             ) {
                 Icon(
-                    imageVector = Icons.Default.Add, // Ícono de galería
+                    imageVector = Icons.Filled.PhotoLibrary, // Ícono de galería
                     contentDescription = "Abrir Galería",
                     modifier = Modifier.size(24.dp) // Tamaño del ícono
                 )
@@ -380,7 +407,7 @@ fun CameraScreen(navController: NavController) {
                 )
             ) {
                 Icon(
-                    imageVector = Icons.Default.ShoppingCart, // Ícono de la cámara
+                    imageVector = Icons.Filled.Camera, // Ícono de la cámara
                     contentDescription = "Abrir cámara",
                     modifier = Modifier.size(24.dp) // Tamaño del ícono
                 )
