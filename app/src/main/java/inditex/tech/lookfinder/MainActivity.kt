@@ -42,15 +42,23 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import java.io.File
 import androidx.core.content.FileProvider
+import inditex.tech.lookfinder.Model.DatabaseHelper
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
 import inditex.tech.lookfinder.viewmodels.PostViewModel
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var databaseHelper: DatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = PostViewModel()
 
+        // Inicializa el DatabaseHelper
+        databaseHelper = DatabaseHelper(this)
+
+        // Esto crea la base de datos si no existe
+        databaseHelper.writableDatabase // Asegúrate de que la base de datos se crea
         setContent {
             LookFinderTheme {
                 AppNavigation()
