@@ -13,9 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import inditex.tech.lookfinder.api.getApiResponse
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
 import inditex.tech.lookfinder.viewmodels.PostViewModel
 
@@ -24,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val viewModel: PostViewModel = PostViewModel()
+        val viewModel = PostViewModel()
 
         setContent {
             LookFinderTheme {
