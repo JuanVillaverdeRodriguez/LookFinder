@@ -7,7 +7,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
-
         fun saveImageToInternalStorage(context: Context, bitmap: Bitmap, fileName: String): String {
         // Crear un archivo en el almacenamiento interno
         val file = File(context.filesDir, fileName)
