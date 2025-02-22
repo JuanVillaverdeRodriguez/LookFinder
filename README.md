@@ -29,7 +29,19 @@ Con Look Finder podrás con solo una foto ver sugerencias de productos de indite
 
 Si encuentras algún issue que pueda ser resuelto por ti, no dudes en mencionarlo en el pull request.
 
-## Issues y Roadmap
+## Licencia
+
+Este proyecto está bajo la **MIT License**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+### Resumen de la Licencia MIT
+
+La Licencia MIT permite que las personas hagan lo siguiente:
+
+- Usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender copias del Software.
+- Permitir a otras personas hacer lo mismo, bajo las mismas condiciones.
+
+Sin embargo, el Software se proporciona "tal cual", sin ninguna garantía de ningún tipo, expresa o implícita, incluyendo pero no limitado a las garantías de comerciabilidad, idoneidad para un propósito particular y no infracción. En ningún caso los autores o titulares del copyright serán responsables de ninguna reclamación, daño o responsabilidad, ya sea en una acción de contrato, agravio o de otro tipo, que surja de o en conexión con el Software o el uso u otros tratos en el Software.
+
 
 ### Preguntar por Issue o Problemas
 
