@@ -1,4 +1,4 @@
-### Look Finder 
+# Look Finder 
 Con Look Finder podrás con solo una foto ver sugerencias de productos de inditex iguales o muy parecidos junto con toda su informacion así como nombre de la pieza precio y marca.
 
 ## Características
@@ -34,7 +34,7 @@ Actualmente, estamos trabajando en los siguientes issues:
 
 Si tienes preguntas o necesitas ayuda con algún issue, por favor abre un "Issue" en nuestro repositorio o contáctanos en:
 
-- **Correo electrónico**: soporte@proyectoXYZ.com
+- **Correo electrónico**: josemanuelbermudezvazquez.com
 
 ¡Gracias por ser parte de la comunidad de código abierto de Proyecto LookFinder!
 
