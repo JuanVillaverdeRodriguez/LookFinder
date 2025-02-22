@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.gson)
-
+    implementation("androidx.compose.foundation:foundation:1.7.5")
+    implementation("androidx.activity:activity:1.8.1")
 
 }
