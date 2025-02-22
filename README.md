@@ -49,7 +49,7 @@ Utiliza las etiquetas correspondientes para que podamos priorizar mejor los issu
 
 Si tienes preguntas o necesitas ayuda con algún issue, por favor abre un "Issue" en nuestro repositorio o contáctanos en:
 
-- **Correo electrónico**: josemanuelbermudezvazquez.com
+- **Correo electrónico**: josemanuelbermudezvazquez@gmail.com
 
 ¡Gracias por ser parte de la comunidad de código abierto de Proyecto LookFinder!
 
