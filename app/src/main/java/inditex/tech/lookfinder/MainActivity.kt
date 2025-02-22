@@ -6,17 +6,18 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.net.Uri
 import android.os.Build
-
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,20 +28,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
-import java.io.File
-import androidx.core.content.FileProvider
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
 import inditex.tech.lookfinder.viewmodels.PostViewModel
+import java.io.File
 
 
 class MainActivity : ComponentActivity() {
@@ -48,15 +45,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val viewModel = PostViewModel()
 
+        if (Build.VERSION.SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                val getpermission = Intent()
+                getpermission.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                startActivity(getpermission)
+            }
+        }
+
+
         setContent {
             LookFinderTheme {
                 AppNavigation()
                 LaunchedEffect(Unit) {
                     viewModel.fetchPosts("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
+                    viewModel.uploadPhoto("image.jpg")
                 }
             }
         }
     }
+
+
 }
 
 @Composable
@@ -144,14 +153,18 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
     val bitmap = BitmapFactory.decodeFile(decodedPath)
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
         // Mostrar la imagen ampliada
         Image(
             bitmap = bitmap.asImageBitmap(),
             contentDescription = "Imagen ampliada",
-            modifier = Modifier.fillMaxWidth().height(400.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -210,7 +223,9 @@ fun CameraScreen(navController: NavController) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         Button(onClick = {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (intent.resolveActivity(context.packageManager) != null) {

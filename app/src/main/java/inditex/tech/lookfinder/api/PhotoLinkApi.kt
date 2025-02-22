@@ -1,12 +1,16 @@
 package inditex.tech.lookfinder.api
 
-import android.content.Intent
-import androidx.core.app.ActivityCompat.startActivityForResult
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.DataOutputStream
+import java.io.File
+import java.io.FileInputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-fun postImageWithLimit(urlString: String, imageFile: File) {
+const val API_URL = "https://lookfinderserver-production.up.railway.app/upload/"
+
+suspend fun postImage(imageFile: File) {
     val maxSize = 7 * 1024 * 1024 // 7MB en bytes
 
     if (!imageFile.exists()) {
@@ -23,7 +27,7 @@ fun postImageWithLimit(urlString: String, imageFile: File) {
     val lineEnd = "\r\n"
     val twoHyphens = "--"
 
-    val url = URL(urlString)
+    val url = URL(API_URL)
     val connection = url.openConnection() as HttpURLConnection
     connection.requestMethod = "POST"
     connection.doOutput = true
@@ -68,40 +72,3 @@ fun postImageWithLimit(urlString: String, imageFile: File) {
         connection.disconnect()
     }
 }
-
-//--------------------------------------------
-//OBTENER RUTA DE FOTO DESDE GALERIA
-//--------------------------------------------
-/*
-const val PICK_IMAGE_REQUEST = 1
-
-fun openGallery() {
-    val intent = Intent(Intent.ACTION_GET_CONTENT)
-    intent.type = "image/*"
-    startActivityForResult(intent, PICK_IMAGE_REQUEST)
-}
-
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-        val imageUri: Uri? = data.data
-        if (imageUri != null) {
-            val file = File(getRealPathFromURI(imageUri))
-            postImageWithLimit("https://miapi.com/upload", file) // Llamamos a la función de subida
-        }
-    }
-}
-
-// Convertir Uri a File Path (Funciona con imágenes de la galería)
-fun getRealPathFromURI(contentUri: Uri): String {
-    var filePath = ""
-    val cursor = contentResolver.query(contentUri, null, null, null, null)
-    if (cursor != null) {
-        cursor.moveToFirst()
-        val index = cursor.getColumnIndex("_data")
-        filePath = if (index >= 0) cursor.getString(index) else ""
-        cursor.close()
-    }
-    return filePath
-}
-*/

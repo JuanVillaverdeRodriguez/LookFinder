@@ -1,5 +1,6 @@
 package inditex.tech.lookfinder.viewmodels
 
+import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,11 +9,13 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import inditex.tech.lookfinder.api.getApiResponse
 import inditex.tech.lookfinder.api.getNewToken
+import inditex.tech.lookfinder.api.postImage
 import inditex.tech.lookfinder.dtos.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 
 
 class PostViewModel : ViewModel() {
@@ -52,4 +55,17 @@ class PostViewModel : ViewModel() {
             }
         }
     }
+
+    fun uploadPhoto(photoUrl: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val image = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), photoUrl)
+                postImage(image)
+            } catch (e: Exception) {
+                Log.e("API", "Error al subir la foto: ${e.message}")
+            }
+
+        }
+    }
+
 }
