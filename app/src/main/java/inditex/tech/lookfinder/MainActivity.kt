@@ -60,7 +60,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-
+import inditex.tech.lookfinder.screens.RecomendationsScreen
+import inditex.tech.lookfinder.viewmodels.PostViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //val viewModel = PostViewModel()
+        val viewModel = PostViewModel()
 
         if (Build.VERSION.SDK_INT >= 30) {
             if (!Environment.isExternalStorageManager()) {
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
         databaseHelper.writableDatabase // Asegúrate de que la base de datos se crea
         setContent {
             LookFinderTheme {
-                AppNavigation()
+                AppNavigation(viewModel)
                 //val photoUrl by viewModel.photoUrl.collectAsState()
 
                 LaunchedEffect(Unit) {
@@ -103,7 +104,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(viewModel: PostViewModel) {
     val navController = rememberNavController()
     NavHost(navController, startDestination = "splash_screen") {
         composable("splash_screen") { SplashScreen(navController) }
@@ -111,6 +112,10 @@ fun AppNavigation() {
         composable("image_detail_screen/{imagePath}") { backStackEntry ->
             val imagePath = backStackEntry.arguments?.getString("imagePath") ?: return@composable
             ImageDetailScreen(navController, imagePath)
+        }
+        composable("recomendations_screen/{imagePath}") { backStackEntry ->
+            val imagePath = backStackEntry.arguments?.getString("imagePath") ?: return@composable
+            RecomendationsScreen(navController, imagePath, viewModel)
         }
     }
 }
@@ -206,7 +211,7 @@ fun ImageDetailScreen(navController: NavController, imagePath: String) {
 
         // Botón para buscar información
         Button(
-            onClick = { /* Implementar búsqueda de información */ },
+            onClick = { navController.navigate("recomendations_screen/${Uri.encode(imagePath)}") },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Buscar información de esta imagen")
@@ -247,7 +252,7 @@ fun CameraScreen(navController: NavController) {
                 result.data?.extras?.get("data") as? Bitmap
             }
             if (photo != null) {
-                val fileName = "photo_${System.currentTimeMillis()}.png"
+                val fileName = "photo_${System.currentTimeMillis()}.jpg"
                 val imagePath = saveImageToInternalStorage(context, photo, fileName)
 
                 if (File(imagePath).exists()) {

@@ -61,11 +61,17 @@ class PostViewModel : ViewModel() {
         }
     }
 
+    /*
+    Devuelve la url de la imagen subida al servidor de Railway
+    * */
     fun uploadPhoto(photoUrl: String) : String{
         var url = ""
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val image = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), photoUrl)
+                Log.d("API", "URL DE FOTO: $photoUrl")
+                //val image = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), photoUrl)
+                val image = File(photoUrl)
+
                 _photoUrl.value = postImage(image)
             } catch (e: Exception) {
                 Log.e("API", "Error al subir la foto: ${e.message}")

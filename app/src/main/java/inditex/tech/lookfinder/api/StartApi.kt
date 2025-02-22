@@ -13,9 +13,14 @@ import org.json.JSONObject
 
 suspend fun getApiResponse(photo: String, token: String): String {
     return withContext(Dispatchers.IO) {
+        Log.d("API", "FOTO_EN_SI: $photo")
+
         val encodedPhoto = URLEncoder.encode(photo, "UTF-8")
         val url = URL("https://api.inditex.com/pubvsearch/products?image=$encodedPhoto")
         val connection = url.openConnection() as HttpURLConnection
+
+        Log.d("API", "URL_FOTO: $url")
+
 
         try {
             connection.requestMethod = "GET"

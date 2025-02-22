@@ -1,5 +1,6 @@
 package inditex.tech.lookfinder.api
 
+import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -18,6 +19,7 @@ suspend fun postImage(imageFile: File) : String {
     var fotoUri = ""
 
     if (!imageFile.exists()) {
+        Log.d("API", imageFile.toString())
         println("Error: El archivo no existe.")
         return fotoUri
     }
@@ -79,3 +81,4 @@ suspend fun postImage(imageFile: File) : String {
     }
     return fotoUri
 }
+
