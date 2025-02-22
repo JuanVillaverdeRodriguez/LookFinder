@@ -1,5 +1,5 @@
 # Look Finder 
-Con Look Finder podrás con solo una foto ver sugerencias de productos de inditex iguales o muy parecidos junto con toda su informacion así como nombre de la pieza precio y marca.
+Con Look Finder podrás con solo una foto ver sugerencias de productos de inditex iguales o muy parecidos junto con toda su informacion así como nombre de la pieza,precio y marca.
 
 ## Características
   -Saca una foto a un conjunto que te guste y podrás ver donde conseguirlo.<br/>
@@ -12,7 +12,10 @@ Con Look Finder podrás con solo una foto ver sugerencias de productos de indite
 
   <h2>Guía de instalación.</h2>
   -Se clonará el repositorio y se instalará mediante USB en un movil Android.<br/>
-  -Se necesitaran permisos de almacenamiento y cámara para qu ela aplicación funcione.
+  -Se necesitaran permisos de almacenamiento y cámara para que la aplicación funcione.
+
+## Qué Licencia Tiene
+
 
 ## Cómo Contribuir
 
@@ -28,7 +31,23 @@ Si encuentras algún issue que pueda ser resuelto por ti, no dudes en mencionarl
 
 ## Issues y Roadmap
 
-Actualmente, estamos trabajando en los siguientes issues:
+### Preguntar por Issue o Problemas
+
+Si encuentras un problema o tienes una pregunta, por favor abre un "Issue" en el repositorio. Asegúrate de incluir:
+
+- Una descripción clara del problema.
+- Los pasos para reproducirlo.
+- La versión del proyecto que estás usando.
+- El sistema operativo o entorno en el que estás trabajando (si es relevante).
+
+Utiliza las etiquetas correspondientes para que podamos priorizar mejor los issues.
+
+### Actualmente, estamos trabajando en los siguientes issues:
+
+- **[#1]** Mejora en la interfaz de usuario: Necesitamos hacer que la interfaz sea más bonita.
+- **[#2]** Mejorar el control de errores y el feedback de estos mismos.
+
+
 
 ## Contacto y Soporte
 
@@ -37,4 +56,16 @@ Si tienes preguntas o necesitas ayuda con algún issue, por favor abre un "Issue
 - **Correo electrónico**: josemanuelbermudezvazquez.com
 
 ¡Gracias por ser parte de la comunidad de código abierto de Proyecto LookFinder!
+
+## Quién Contribuyó
+
+Agradecemos a todos los que han contribuido al proyecto. Algunos colaboradores clave incluyen:
+
+- **hugo**: Desarrollo de la interfaz de usuario.
+- **Jack**: Implementación de la integración con el API externo.
+- **Juan Carlos**: Corrección de errores de rendimiento.
+- **Jose Manuel**: Corrección de errores de rendimiento.
+
+
+¡Gracias a todos los colaboradores por su tiempo y esfuerzo!
 
