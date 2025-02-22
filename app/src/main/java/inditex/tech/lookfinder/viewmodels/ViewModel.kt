@@ -13,7 +13,8 @@ class PostViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d("API", "FUE GUAY")
-                getApiResponse("https://drive.google.com/file/d/1loi5zPz8nO8wYrBHxtlOHSrl8FjI4Z-z/view?usp=drive_link")
+                val res = getApiResponse("https://lookfinderserver-production.up.railway.app/uploads/image.jpg")
+                Log.d("API", res)
             } catch (e: Exception) {
                 println("Error: ${e.message}")
             }
