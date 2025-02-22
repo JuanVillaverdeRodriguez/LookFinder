@@ -1,19 +1,18 @@
 # LookFinder 
-Con Look Finder podrás con solo una foto ver sugerencias de productos de inditex iguales o muy parecidos 
-junto con toda su informacion así como nombre de la pieza,precio y marca.
+Con Look Finder podrás con solo una foto ver sugerencias de productos de inditex iguales o muy parecidos junto con toda su informacion así como nombre de la pieza,precio y marca.
 
 ## Características
-  -Saca una foto a un conjunto que te guste y podrás ver donde conseguirlo.
-  -Guarda una lista con tus piezas deseasas para no olvidarte y poder plantearte futuras compras.
-  -Podrás compartir con tus amigos y redes sociales con un solo botón para que todos sepan a que piezas tienes echado el ojo.
+  - Saca una foto a un conjunto que te guste y podrás ver donde conseguirlo.
+  - Guarda una lista con tus piezas deseasas para no olvidarte y poder plantearte futuras compras.
+  - Podrás compartir con tus amigos y redes sociales con un solo botón para que todos sepan a que piezas tienes echado el ojo.
 
 ## Tecnologías usadas
-  -Aplicación movil programada en Kotlin.
-  -Interfaces implementadas con Jetckpack compose.
+  - Aplicación movil programada en Kotlin.
+  - Interfaces implementadas con Jetckpack compose.
 
-## Guía de instalación. 
-  -Se clonará el repositorio y se instalará mediante USB en un movil Android.
-  -Se necesitaran permisos de almacenamiento y cámara para que la aplicación funcione.
+## Guía de instalación.
+  - Se clonará el repositorio y se instalará mediante USB en un movil Android.<br/>
+  - Se necesitaran permisos de almacenamiento y cámara para que la aplicación funcione.
 
 ## Licencia
 
