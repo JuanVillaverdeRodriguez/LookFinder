@@ -313,6 +313,7 @@ fun CameraScreen(navController: NavController) {
 
             LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
                 items(imageList) { imagePath ->
+                    Log.d("GRID", "IMAGEN:$imagePath")
                     val file = File(imagePath)
                     if (file.exists()) {
                         val bitmap = BitmapFactory.decodeFile(imagePath)
