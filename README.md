@@ -1,12 +1,12 @@
-<h1>Look Finder</h1>
+### Look Finder 
 Con Look Finder podrás con solo una foto ver sugerencias de productos de inditex iguales o muy parecidos junto con toda su informacion así como nombre de la pieza precio y marca.
 
-<h2>Características</h2>
+## Características
   -Saca una foto a un conjunto que te guste y podrás ver donde conseguirlo.<br/>
   -Guarda una lista con tus piezas deseasas para no olvidarte y poder plantearte futuras compras.<br/>
   -Podrás compartir con tus amigos y redes sociales con un solo botón para que todos sepan a que piezas tienes echado el ojo.
 
-<h2>Tecnologías usadas</h2>
+## Tecnologías usadas
   -Aplicación movil programada en Kotlin.<br/>
   -Interfaces implementadas con Jetckpack compose.
 
@@ -27,4 +27,14 @@ Con Look Finder podrás con solo una foto ver sugerencias de productos de indite
 Si encuentras algún issue que pueda ser resuelto por ti, no dudes en mencionarlo en el pull request.
 
 ## Issues y Roadmap
+
+Actualmente, estamos trabajando en los siguientes issues:
+
+## Contacto y Soporte
+
+Si tienes preguntas o necesitas ayuda con algún issue, por favor abre un "Issue" en nuestro repositorio o contáctanos en:
+
+- **Correo electrónico**: soporte@proyectoXYZ.com
+
+¡Gracias por ser parte de la comunidad de código abierto de Proyecto LookFinder!
 
