@@ -1,6 +1,5 @@
 package inditex.tech.lookfinder.viewmodels
 
-import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +13,7 @@ import inditex.tech.lookfinder.dtos.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -86,6 +86,14 @@ class PostViewModel : ViewModel() {
         }
 
         return url
+    }
+
+    fun change(product: Product, favorite: Boolean) {
+        _recomendedProducts.value.map { pro ->
+            if (pro.id == product.id) {
+                pro.isFavorite = favorite.not()
+            }
+        }
     }
 
 }
