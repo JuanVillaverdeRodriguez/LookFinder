@@ -10,9 +10,9 @@ Con Look Finder podrás con solo una foto ver sugerencias de productos de indite
   - Aplicación movil programada en Kotlin.
   - Interfaces implementadas con Jetckpack compose.
 
-## Guía de instalación.
-  - Se clonará el repositorio y se instalará mediante USB en un movil Android.<br/>
-  - Se necesitaran permisos de almacenamiento y cámara para que la aplicación funcione.
+<h2>📥 Descarga</h2>
+<p>Descarga la última versión de la aplicación:</p>
+<p><a href="https://github.com/JuanVillaverdeRodriguez/LookFinder/releases/tag/v0.1.0" target="_blank">🔗 Descargar APK</a></p>
 
 ## Licencia
 
