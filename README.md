@@ -12,7 +12,7 @@ Con Look Finder podrás con solo una foto ver sugerencias de productos de indite
 
 <h2>📥 Descarga</h2>
 <p>Descarga la última versión de la aplicación:</p>
-<p><a href="https://github.com/JuanVillaverdeRodriguez/LookFinder/releases/tag/v0.2" target="_blank">🔗 Descargar APK</a></p>
+<p><a href="https://github.com/JuanVillaverdeRodriguez/LookFinder/releases/tag/0.2">🔗 Descargar APK</a></p>
 
 ## Licencia
 
