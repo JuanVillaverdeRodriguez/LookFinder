@@ -5,5 +5,6 @@ data class Product(
     val name: String,
     val price: Price,
     val link: String,
-    val brand: String
+    val brand: String,
+    var isFavorite: Boolean = false
 )

@@ -15,6 +15,7 @@ import inditex.tech.lookfinder.dtos.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject

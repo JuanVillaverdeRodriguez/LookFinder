@@ -73,6 +73,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import inditex.tech.lookfinder.Model.DatabaseHelper
+import inditex.tech.lookfinder.screens.FavoriteScreen
 import inditex.tech.lookfinder.screens.RecomendationsScreen
 import inditex.tech.lookfinder.ui.theme.LookFinderTheme
 import inditex.tech.lookfinder.viewmodels.PostViewModel
@@ -114,7 +115,12 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
+    override fun onDestroy() {
+        super.onDestroy()
+        // Cierra la base de datos cuando la actividad se destruye
+        databaseHelper.close()
+        Log.d("Cerrada bd","Se ha cerrado el asistente")
+    }
 
 }
 
@@ -132,6 +138,7 @@ fun AppNavigation(viewModel: PostViewModel) {
             val imagePath = backStackEntry.arguments?.getString("imagePath") ?: return@composable
             RecomendationsScreen(navController, imagePath, viewModel)
         }
+        composable("favorites_screen") { FavoriteScreen(navController) }
     }
 }
 
@@ -419,8 +426,7 @@ fun CameraScreen(navController: NavController) {
             // Botón "Fav" (derecha)
             Button(
                 onClick = {
-                    // Acción para el botón de favoritos
-                    Toast.makeText(context, "Añadir a favoritos", Toast.LENGTH_SHORT).show()
+                    navController.navigate("favorites_screen")
                 },
                 modifier = Modifier
                     .weight(1f), // Hace que el botón de "Fav" ocupe el 33% del espacio
